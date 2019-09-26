@@ -5,7 +5,7 @@ using UnityEngine;
 public class PoolManager : MonoBehaviour
 {
 
-    [SerializeField] public GameObject[] Pool;
+    public GameObject[] Pool;
     public static PoolManager instance;
 
     void Awake()
@@ -19,6 +19,10 @@ public class PoolManager : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+    void Start()
+    {
+        Load(); // load game if data file exist
     }
     private bool IsPoolHasObj(GameObject obj)
     {
@@ -40,5 +44,16 @@ public class PoolManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void Load()
+    {
+        bool[] data = SaveLoad.LoadPoolData();
+
+        if (data == null) return;
+        for(int i = 0; i<data.Length; i++)
+        {
+             if (!data[i]) instance.Pool[i].SetActive(false);
+        }
     }
 }

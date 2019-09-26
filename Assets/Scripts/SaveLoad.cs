@@ -7,7 +7,6 @@ public class SaveLoad
 {
     private const string SAVE_SEPARATOR = "#SAVE-VALUE#";
 
-
    public static void SavePlayerData(PlayerSwitcher player,int playerNum)
     {
         string data = JsonUtility.ToJson(player);
@@ -24,13 +23,14 @@ public class SaveLoad
         }
 
 
-        string data = JsonUtility.ToJson(PoolManager.instance.Pool);
+        string data = JsonUtility.ToJson(data1);
         // SaveDataToFile(data, @"Data\PoolInfo.txt");
         // SaveDataToFile(data, @"Data\PoolInfo.txt");
-        
-       // string saveString = string.Join(SAVE_SEPARATOR, data1);
-        File.WriteAllText(@"Data\PoolInfo.txt", JsonUtility.ToJson(PoolManager.instance.Pool));
 
+        // string saveString = string.Join(SAVE_SEPARATOR, data1);
+       // string saveString = string.
+         File.WriteAllLines(@"Data\PoolInfo.txt", data1);
+       // File.WriteAllLines
     }
 
     public static void SaveGame()
@@ -39,13 +39,21 @@ public class SaveLoad
         //SavePlayerData(PlayerSwitcher player, int playernum);
     }
 
-    public static PoolManager LoadPoolData()
+    public static bool[] LoadPoolData()
     {
         // load from file 
-        string data = ReedDataFromFile(@"Data\PoolInfo.txt");
-        PoolManager loaded = JsonUtility.FromJson<PoolManager>(data);
+        string path = @"Data\PoolInfo.txt";
 
-        return loaded;
+        if (!File.Exists(path)) return null;
+
+        string[] loadString = File.ReadAllLines(path);
+        bool[] data = new bool[loadString.Length];
+         for(int i = 0; i < loadString.Length; i++)
+         {
+             data[i] = loadString[i] == "True";
+         }
+         
+        return data;
     }
 
     public static PlayerSwitcher LoadPlayerData(int playerNum)
