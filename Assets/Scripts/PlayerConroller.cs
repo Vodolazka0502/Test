@@ -1,17 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerConroller : MonoBehaviour
 {
-   
+
     public float speed = 2;
 
     private Vector3 newPosition;
     public Transform currentTransform;
+
+    public UnityEvent SwitchEvent;
+
     void FixedUpdate()
     {
-        if (currentTransform)
+
+        if (currentTransform && (GameController.instance.gameState == GameController.GameState.Play))
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -22,9 +27,17 @@ public class PlayerConroller : MonoBehaviour
     }
     public void SwitchObject(Transform currentTransform)
     {
-        newPosition = currentTransform.position;
+        if (currentTransform == this.currentTransform) return;
 
+        SwitchEvent.Invoke();
+
+        newPosition = currentTransform.position;
         this.currentTransform = currentTransform;
     }
-   
+
+    public void Reset()
+    {
+        newPosition = currentTransform.position;
+        currentTransform = null;
+    }
 }

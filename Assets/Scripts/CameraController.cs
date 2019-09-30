@@ -12,5 +12,9 @@ public class CameraController : MonoBehaviour
         {
             transform.position = new Vector3(0f, _playerConroller.currentTransform.position.y, -10f);
         }
+        else
+        {
+            transform.position = new Vector3(0f, 0f, -10f);
+        }
     }
 }

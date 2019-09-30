@@ -1,12 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PoolManager : MonoBehaviour
 {
 
     public GameObject[] Pool;
     public static PoolManager instance;
+
+    public UnityEvent GameOverEvent;
+
+    private int takenCount= 0;
+
 
     void Awake()
     {
@@ -20,9 +26,14 @@ public class PoolManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    void Start()
+    public void Reset()
     {
-        Load(); // load game if data file exist
+        foreach (GameObject element in Pool)
+        {
+            element.SetActive(true);
+        }
+        takenCount = 0;
+        //Load(); // load game if data file exist
     }
     private bool IsPoolHasObj(GameObject obj)
     {
@@ -39,7 +50,10 @@ public class PoolManager : MonoBehaviour
         if (IsPoolHasObj(obj))
         {
             obj.SetActive(false);
-            SaveLoad.SavePoolData();
+            //SaveLoad.SavePoolData();
+            takenCount++;
+            if (IsMinigameCompleted()) GameOverEvent.Invoke();
+            
             return true;
         }
 
@@ -55,5 +69,11 @@ public class PoolManager : MonoBehaviour
         {
              if (!data[i]) instance.Pool[i].SetActive(false);
         }
+        if (IsMinigameCompleted()) GameOverEvent.Invoke();
+    }
+
+    private bool IsMinigameCompleted()
+    {
+        return takenCount == instance.Pool.Length;
     }
 }

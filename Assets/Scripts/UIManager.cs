@@ -16,6 +16,12 @@ public class UIManager : MonoBehaviour
     public Text player2Pink;
     public Text player2Green;
 
+    public GameObject panelGameInfo;
+    public Button resetButton;
+
+    public string startText = "Select player!";
+    public string gameOverText = "Game over! Press reset button to continue";
+
     void Awake()
     {
         if (instance)
@@ -28,7 +34,47 @@ public class UIManager : MonoBehaviour
         instance = this;
     }
 
-    public void RefreshUI()
+    public void ShowPanel(bool isVisible)
+    {
+        panelGameInfo.SetActive(isVisible);
+    }
+
+    private void SetTextOnPanel(string newText)
+    {
+        if (!panelGameInfo.activeSelf) ShowPanel(true);
+        panelGameInfo.GetComponentInChildren<Text>().text = newText;
+    }
+
+    private void ShowResetButton(bool isVisible)
+    {
+        resetButton.gameObject.SetActive(isVisible);
+    }
+
+    public void OnGameOverEvent()
+    {
+        SetTextOnPanel(gameOverText);
+        ShowResetButton(true);
+    }
+
+    public void Reset()
+    {
+        SetTextOnPanel(startText);
+        ShowResetButton(false);
+
+        player1.playerScore[StuffController.SType.Yellow] = 0;
+        player1.playerScore[StuffController.SType.Pink] = 0;
+        player1.playerScore[StuffController.SType.Green] = 0;
+
+        player2.playerScore[StuffController.SType.Yellow] = 0;
+        player2.playerScore[StuffController.SType.Pink] = 0;
+        player2.playerScore[StuffController.SType.Green] = 0;
+        Refresh();
+
+        player1.ResetPosition();
+        player2.ResetPosition();
+    }
+
+    public void Refresh()
     {
         player1Yellow.text = player1.playerScore[StuffController.SType.Yellow].ToString();
         player1Pink.text = player1.playerScore[StuffController.SType.Pink].ToString();
